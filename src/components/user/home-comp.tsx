@@ -108,7 +108,7 @@ export function HomeComp() {
   const latest = Number(x[2]) - 2;
 
   const late: DataItem[] = data.filter(
-    (review) => Number(review.date[2]) == latest
+    (review) => Number(review.date[2]) === latest
   );
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
@@ -207,7 +207,7 @@ export function HomeComp() {
         <Loader />
       ) : (
         <>
-          {data.length == 0 ? (
+          {data.length === 0 ? (
             <>
               {" "}
               <div className="flex justify-center items-center content-center  h-[400px]">
@@ -247,7 +247,7 @@ export function HomeComp() {
                     <div
                       key={item.id}
                       className={`mx-1 ${
-                        Number(item.date[2]) == latest ? " border-red-700" : ""
+                        Number(item.date[2]) === latest ? " border-red-700" : ""
                       } my-1 py-2 px-2 mobile:w-[300px]   grid w-[400px]  border-[1px] shadow-md rounded-lg border-gray-300 items-center justify-center content-center`}
                     >
                       <div>Zone:{item.zone}</div>
@@ -265,7 +265,7 @@ export function HomeComp() {
                             shareDoc(item, i);
                           }}
                         >
-                          {item.isShared == true ? "Shared" : "Share"}
+                          {item.isShared === true ? "Shared" : "Share"}
                         </button>
                         <button
                           className="bg-[#e69779] hover:bg-[#da8867] w-28 h-10 rounded-lg text-white "
@@ -284,7 +284,7 @@ export function HomeComp() {
                   <></>
                 ) : (
                   <div className="flex justify-center gap-2">
-                    {currentPage == 0 ? (
+                    {currentPage === 0 ? (
                       <></>
                     ) : (
                       <button

@@ -6,7 +6,6 @@ import { appRoutesObj } from "./app.paths";
 import { UserProvider } from "./context/auth-context";
 import PrivateRoute from "./context/private-route";
 
-const ExamplePage = React.lazy(() => import("./pages/user/example-page"));
 const NotFoundPage = React.lazy(() => import("./pages/404"));
 const Login = React.lazy(() => import("./pages/user/login"));
 const Home =React.lazy(() => import("./pages/home"));

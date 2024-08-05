@@ -3,7 +3,6 @@ import React, { useContext, useState } from "react";
 import { db } from "src/config/config";
 import { MdOutlineDone } from "react-icons/md";
 import { UserContext } from "src/context/auth-context";
-import UpdatePassword from "src/components/change-password";
 import { useNavigate } from "react-router-dom";
 function OperationForm() {
   const [zone, setZone] = useState("");
@@ -167,6 +166,7 @@ function OperationForm() {
                            
                           {options.map((option) => (
                             <a
+                            href="/#"
                               key={option}
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                               role="menuitem"

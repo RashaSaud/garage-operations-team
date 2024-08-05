@@ -88,7 +88,7 @@ isDone:boolean
         <Loader />
       ) : (
         <>
-          {data.length == 0 ? (
+          {data.length === 0 ? (
             <>
               {" "}
               <div className="flex justify-center items-center content-center  h-[400px]">
@@ -126,7 +126,7 @@ className={`border w-22 bg-teal-500 ${item.isDone ? 'rounded-full bg-teal-500 w-
                   <></>
                 ) : (
                   <div className="flex justify-center mt-4 mb-4  gap-2">
-                    {currentPage == 0 ? (
+                    {currentPage === 0 ? (
                       <></>
                     ) : (
                       <button
