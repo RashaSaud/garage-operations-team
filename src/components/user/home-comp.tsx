@@ -19,6 +19,7 @@ import { IoMdArrowDropright } from "react-icons/io";
 import { BsDatabaseFillX } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import FacilitesExportExcelSheet from "./facilites-excel-sheet";
+import { MdDone } from "react-icons/md";
 interface FaDataItem {
   // Define the structure of your data here
   id: string;
@@ -32,6 +33,7 @@ interface FaDataItem {
 interface DataItem {
   // Define the structure of your data here
   id: string;
+  imageUrl:string
   zone: string;
   location: string;
   description: string;
@@ -80,6 +82,7 @@ export function HomeComp() {
       description: data.description,
       addedBy: "operation Team",
       date: data.date,
+      imageUrl:data.imageUrl ? data.imageUrl : null,
       isDone: false,
     }).then(async () => {
       const docRef = doc(db, "notices", data.id);
@@ -97,9 +100,16 @@ export function HomeComp() {
   };
 
   const [data, setData] = useState<DataItem[]>([]);
-  const pendingReviews: DataItem[] = data.filter((review) => review.isShared);
 
   const whatDone: FaDataItem[] = facilites.filter((review) => review.isDone);
+  const pendingReviews: DataItem[] = data.filter((review,i) => {
+    if(review.isShared === true && whatDone[i]?.isDone !== true){
+      return review.isShared
+      
+    }else{
+      return null
+    }
+  });
 
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
@@ -129,7 +139,7 @@ export function HomeComp() {
   );
   const handleExport = () => {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Users");
+    const worksheet = workbook.addWorksheet("notices");
 
     worksheet.addRow(["Zone", "Description", "Location", "date", "Notice By"]);
 
@@ -150,7 +160,7 @@ export function HomeComp() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "users.xlsx";
+      link.download = "operation-notices.xlsx";
       link.click();
       URL.revokeObjectURL(url);
     });
@@ -210,7 +220,8 @@ export function HomeComp() {
           {data.length === 0 ? (
             <>
               {" "}
-              <div className="flex justify-center items-center content-center  h-[400px]">
+              <div className="flex justify-center items-center content-center   h-[400px]">
+
                 <div className="flex-row items-center justify-center content-center  text-center mt-20 ">
                   <BsDatabaseFillX className="text-[200px] text-gray-400" />
 
@@ -222,8 +233,9 @@ export function HomeComp() {
             </>
           ) : (
             <>
-              <div className="flex   justify-center h-[800px] mobile:h-auto items-center content-center flex-col  text-lg font-medium">
-                <div className=" flex-col shadow-md bg-white w-[900px] h-[100px] border-1 mb-5 border-gray-200 rounded-lg  flex items-center justify-center text-center ">
+              <div className="flex justify-center flex-col content-center  items-center ">
+                
+                <div className=" flex-col   shadow-md bg-white w-[900px] tablet:w-auto h-[100px] tablet:h-fit border-1  border-gray-200 rounded-lg mb-5  flex items-center justify-center text-center ">
                   <div className="  grid grid-cols-3 w-[300px]">
                     <h1>
                       In progress <hr />
@@ -236,55 +248,83 @@ export function HomeComp() {
                       Late <hr />
                     </h1>
                   </div>
-                  <div className=" py-1 grid grid-cols-3 w-[300px]">
+                  <div className=" py-1 grid grid-cols-3 w-[300px]  ">
                     <h1>{pendingReviews.length}</h1>
                     <h1>{whatDone.length}</h1>
                     <h1>{late.length}</h1>
                   </div>
                 </div>
-                <div className="grid grid-cols-3  h-[450px]  mobile:grid-cols-1    text-center items-center justify-center ">
+                <div className="grid grid-cols-3 ">
                   {currentItems.map((item: DataItem, i) => (
-                    <div
-                      key={item.id}
-                      className={`mx-1 ${
-                        Number(item.date[2]) <= latest ? " border-red-700" : ""
-                      } my-1 py-2 px-2 mobile:w-[300px]   grid w-[400px]  border-[1px] shadow-md rounded-lg border-gray-300 items-center justify-center content-center`}
-                    >
-                      <div>Zone:{item.zone}</div>
+                    // <div
+                    //   key={item.id}
+                    //   className={`mx-1 ${
+                    //     Number(item.date[2]) <= latest ? " border-red-700" : ""
+                    //   } my-1 py-2 px-2 mobile:w-[300px]   grid w-[400px]  border-[1px] shadow-md rounded-lg border-gray-300 items-center justify-center content-center`}
+                    // >
+                    //   <div>Zone:{item.zone}</div>
 
-                      <p>Location:{item.location}</p>
-                      <p>Description:{item.description}</p>
-                      <p>Notice By:{item.addedBy}</p>
-                      <p>Date {item.date}</p>
-                      <div className="flex flex-row gap-2 justify-center my-2">
-                        <button
-                          disabled={item.isShared}
-                          className={` ${
-                            item.isShared ? "bg-teal-600" : "bg-[#29bfa7]"
-                          }  h-10 rounded-lg w-28 hover:bg-teal-600 px-1 text-white`}
-                          onClick={() => {
-                            shareDoc(item, i);
-                          }}
-                        >
-                          {item.isShared === true ? "Shared" : "Share"}
-                        </button>
-                        <button
-                          className="bg-[#e69779] hover:bg-[#da8867] w-28 h-10 rounded-lg text-white "
-                          onClick={() => {
-                            DeleteDocument(item.id);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
+                    //   <p>Location:{item.location}</p>
+                    //   <p>Description:{item.description}</p>
+                    //   <p>Notice By:{item.addedBy}</p>
+                    //   <p>Date {item.date}</p>
+                    //   <div className="flex flex-row gap-2 justify-center my-2">
+                    //     <button
+                    //       disabled={item.isShared}
+                    //       className={` ${
+                    //         item.isShared ? "bg-teal-600" : "bg-[#29bfa7]"
+                    //       }  h-10 rounded-lg w-28 hover:bg-teal-600 px-1 text-white`}
+                    //       onClick={() => {
+                    //         shareDoc(item, i);
+                    //       }}
+                    //     >
+                    //       {item.isShared === true ? "Shared" : "Share"}
+                    //     </button>
+                    //     <button
+                    //       className="bg-[#e69779] hover:bg-[#da8867] w-28 h-10 rounded-lg text-white "
+                    //       onClick={() => {
+                    //         DeleteDocument(item.id);
+                    //       }}
+                    //     >
+                    //       Delete
+                    //     </button>
+                    //   </div>
+                    // </div>
+                    <div className={`max-w-sm  mx-2 my-1 border-4 border-dashed ${ Number(item.date[2]) <= latest ? " border-red-700" : "border-[#5ebba8] "}  rounded-lg shadow`}>
+    
+        {item.imageUrl ? <img className="rounded-t-lg h-44 w-full" src={item.imageUrl} alt=" " />: <img className="rounded-t-lg h-44 w-full" src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoBAeYwmKevvqaidagwfKDT6UXrei3kiWYlw&s' alt=" " />}
+  
+    <div className="p-5">
+        
+            <h2 className="mb-2 text-xl font-bold tracking-tight text-gray-900">Zone : {item.zone}</h2>
+            <h2 className="mb-2 text-xl font-bold tracking-tight text-gray-900 ">Date : {item.date}</h2>
+
+            <h1>Location {item.location}</h1>
+
+            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{item.description}</p>
+
+        <button 
+        onClick={()=>{   shareDoc(item, i);}}
+        disabled={item.isShared}  className={`inline-flex mx-1 items-center px-3 py-2 text-sm font-medium text-center text-white bg-teal-500 focus:ring-4 focus:outline-none focus:ring-teal-300 ${item.isShared === false ? 'rounded-lg  ': 'rounded-full'}`}>
+        {item.isShared ? <MdDone /> : "Share"}
+            
+        </button>
+        <button 
+        onClick={()=>{    DeleteDocument(item.id);}}
+        className={`inline-flex rounded-lg  items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 focus:ring-4 focus:outline-none focus:ring-teal-300 `}>
+        Delete
+            
+        </button>
+       
+    </div>
+</div>
                   ))}
                 </div>
 
                 {data.length <= 6 ? (
                   <></>
                 ) : (
-                  <div className="flex justify-center gap-2">
+                  <div className="flex  justify-center gap-2 laptop:mt-[300px]">
                     {currentPage === 0 ? (
                       <></>
                     ) : (
@@ -329,7 +369,7 @@ export function HomeComp() {
                   <FacilitesExportExcelSheet />
                 </div>
                 <button
-                  className="text-blue-500 mb-56 mobile:mb-0 mobile:text-sm mobile:mt-3"
+                  className="text-blue-500  mobile:mb-0 mobile:text-sm mobile:mt-3"
                   onClick={() => {
                     nav("/update-password");
                   }}

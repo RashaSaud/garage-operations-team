@@ -4,6 +4,7 @@ import { db } from "src/config/config";
 import { MdOutlineDone } from "react-icons/md";
 import { UserContext } from "src/context/auth-context";
 import { useNavigate } from "react-router-dom";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 function OperationForm() {
   const [zone, setZone] = useState("");
   const [location, setLocation] = useState("");
@@ -24,27 +25,86 @@ function OperationForm() {
     "Basement floor B",
     "Hackathon"
   ];
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+  // const handleSubmit = async (e: any) => {
+  //   e.preventDefault();
+  //   try {
+  //     await addDoc(collection(db, "notices"), {
+  //       zone,
+  //       location,
+  //       date: today.toLocaleDateString(),
+  //       description,
+  //       addedBy: user.email,
+  //       isShared: false,
+  //     }).then(() => {
+  //       setSnackbar(true);
+  //       setTimeout(() => {
+  //         setSnackbar(false);
+  //       }, 3000); 
+  //     });
+  //   } catch (error) {
+  //     console.error("Error adding document: ", error);
+  //   }
+  // };
+  const [image, setImage] = useState<File | null|any>(null);
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setImage(event.target.files?.[0]);
+  };
+
+  const handleImageUpload = async (image: File, zone: string, location: string, description: string) => {
+   if(image){
+    const storage = getStorage();
+    const storageRef = ref(storage, `images/${image.name}`);
+    const uploadTask = await uploadBytes(storageRef, image);
+    const downloadURL = await getDownloadURL(uploadTask.ref);
     try {
+     
+  
       await addDoc(collection(db, "notices"), {
-        zone,
+        zone:zone,
+        date: new Date().toLocaleDateString(),
+        description,
+        location,
+        addedBy: user.email,
+        isShared: false,
+        imageUrl: downloadURL,
+      }).then(() => {
+             setSnackbar(true);
+             setTimeout(() => {
+              setSnackbar(false);
+            }, 3000); 
+         });
+  
+      console.log('Image uploaded and data stored successfully!');
+    } catch (error) {
+      console.error('Error uploading image or storing data:', error);
+
+    }
+   }else {
+    await addDoc(collection(db, "notices"), {
+      zone,
         location,
         date: today.toLocaleDateString(),
         description,
         addedBy: user.email,
         isShared: false,
-      }).then(() => {
-        setSnackbar(true);
-        setTimeout(() => {
-          setSnackbar(false);
-        }, 3000); 
-      });
-    } catch (error) {
-      console.error("Error adding document: ", error);
-    }
-  };
+    }).then(() => {
+      setSnackbar(true);
+      setTimeout(() => {
+       setSnackbar(false);
+     }, 3000); 
+  });
+   }
+  
+   
 
+  };
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  
+    handleImageUpload(image, zone,location,description);
+  };
+  
   return (
     <div className="w-screen h-screen bg-[#eeeae1] flex flex-col px-4">
         
@@ -212,6 +272,8 @@ function OperationForm() {
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </div>
+                <input type="file" onChange={handleImageChange} />
+                <button type="submit">Upload</button>
                 <button
                   type="submit"
                   className="bg-[#29bfa7] hover:bg-teal-600 text-white font-bold rounded px-3 py-2 "
@@ -231,3 +293,5 @@ function OperationForm() {
 }
 
 export default OperationForm;
+
+

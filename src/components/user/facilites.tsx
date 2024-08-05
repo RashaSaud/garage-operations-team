@@ -22,6 +22,7 @@ export default function FacilitesComp() {
     date: string;
     isDone: boolean;
     addedBy: string;
+    imageUrl:string
   }
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function FacilitesComp() {
   const nav = useNavigate();
   const [data, setData] = useState<DataItem[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 9;
+  const itemsPerPage = 6;
 
   const handlePrev = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
@@ -84,9 +85,9 @@ export default function FacilitesComp() {
 
   const latest = Number(x[2]) - 2;
 
-  const late: DataItem[] = data.filter(
-    (review) => Number(review.date[2]) <= latest
-  );
+  // const late: DataItem[] = data.filter(
+  //   (review) => Number(review.date[2]) <= latest
+  // );
 
   const currentItems = data.slice(
     currentPage * itemsPerPage,
@@ -113,39 +114,42 @@ export default function FacilitesComp() {
             </>
           ) : (
             <>
-              <div className="flex justify-center items-center content-center flex-col py-2 text-lg font-medium">
-                <div className="grid grid-cols-3 text-center items-center justify-center content-center">
+              <div className="flex justify-center ">
+               
+                <div className="grid grid-cols-3 gap-4   ">
                   {currentItems.map((item: DataItem, i) => (
-                    <div
-                      key={item.id}
-                      className={`mx-1  border-dashed ${ Number(item.date[2]) <= latest ? " border-red-700" : "border-[#5ebba8] "}  items-center justify-center content-center my-2 py-2 px-2 grid w-[400px] border-[1px] shadow-md rounded-lg `}
-                    >
-                      <p>Zone:{item.zone}</p>
-                      <p>Location:{item.location}</p>
-                      <p>Description:{item.description}</p>
-                      <p>Notice By :{item.addedBy}</p>
-                      <p>Date {item.date}</p>
-                      <button
-                        disabled={item.isDone}
-                        className={`border w-22 bg-teal-500 ${
-                          item.isDone
-                            ? "rounded-full bg-teal-500 w-5 "
-                            : "rounded-lg  hover:bg-teal-700"
-                        }  text-white `}
-                        onClick={() => {
-                          updateIsDone(item.id);
-                        }}
-                      >
-                        {item.isDone ? <MdDone /> : "Done"}
-                      </button>
-                    </div>
+
+<div className={`max-w-sm  border-4 border-dashed ${ Number(item.date[2]) <= latest ? " border-red-700" : "border-[#5ebba8] "}  rounded-lg shadow`}>
+    
+        {item.imageUrl ? <img className="rounded-t-lg h-44 w-full" src={item.imageUrl} alt=" " />: <img className="rounded-t-lg h-44 w-full" src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoBAeYwmKevvqaidagwfKDT6UXrei3kiWYlw&s' alt=" " />}
+  
+    <div className="p-5">
+    <h2 className="mb-2 text-xl font-bold tracking-tight text-gray-900">Zone : {item.zone}</h2>
+
+            <h2 className="mb-2 text-xl font-bold tracking-tight text-gray-900">Date : {item.date}</h2>
+            <h1>Location {item.location}</h1>
+
+        <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{item.description}</p>
+        <button 
+        onClick={()=>{   updateIsDone(item.id);}}
+        disabled={item.isDone}  className={`inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-teal-500 focus:ring-4 focus:outline-none focus:ring-teal-300 ${item.isDone === false ? 'rounded-lg  ': 'rounded-full'}`}>
+        {item.isDone ? <MdDone /> : "Done"}
+            
+        </button>
+    </div>
+</div>
                   ))}
+
                 </div>
 
-                {data.length <= 9 ? (
+               
+
+              
+              </div> 
+              {data.length <= 6 ? (
                   <></>
                 ) : (
-                  <div className="flex justify-center mt-4 mb-4  gap-2">
+                  <div className="flex justify-center ">
                     {currentPage === 0 ? (
                       <></>
                     ) : (
@@ -168,19 +172,14 @@ export default function FacilitesComp() {
                       </button>
                     )}
                   </div>
-                )}
+                )} 
+                 <div className="flex justify-center flex-col  items-center ">
+                 <button className="text-blue-500 pb-3 " onClick={()=>{nav('/update-password')}}>Change Password</button>
 
-                <FacilitesExportExcelSheet />
-                {/* Export button */}
-                <button
-                  className="text-blue-500 mb-56"
-                  onClick={() => {
-                    nav("/update-password");
-                  }}
-                >
-                  Change Password
-                </button>
-              </div>
+                 <FacilitesExportExcelSheet />
+              
+                 </div>
+       
             </>
           )}
         </>
@@ -188,3 +187,6 @@ export default function FacilitesComp() {
     </>
   );
 }
+
+
+

@@ -38,7 +38,7 @@ function FacilitesExportExcelSheet() {
   }, []);
   const handleExportForFacilitesSheet = () => {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Users");
+    const worksheet = workbook.addWorksheet("facilities");
 
     worksheet.addRow(["Zone", "Description", "Location", "date","Notice By"]);
 
@@ -55,13 +55,13 @@ function FacilitesExportExcelSheet() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "users.xlsx";
+      link.download = "facilities.xlsx";
       link.click();
       URL.revokeObjectURL(url);
     });
   };
   return (
-    <div>
+    <div className='flex'>
       <button  className="bg-teal-500 border-dashed border-2 w-44 hover:bg-teal-600 px-2 py-1 rounded-md" onClick={handleExportForFacilitesSheet}>Export Facilites sheet</button>
     </div>
   )
