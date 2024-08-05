@@ -165,8 +165,7 @@ function OperationForm() {
                           {" "}
                            
                           {options.map((option) => (
-                            <a
-                            href="/#"
+                            <p
                               key={option}
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                               role="menuitem"
@@ -176,7 +175,7 @@ function OperationForm() {
                               }}
                             >
                               {option}
-                            </a>
+                            </p>
                           ))}
                         </div>
                       </div>

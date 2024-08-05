@@ -108,7 +108,7 @@ export function HomeComp() {
   const latest = Number(x[2]) - 2;
 
   const late: DataItem[] = data.filter(
-    (review) => Number(review.date[2]) === latest
+    (review) => Number(review.date[2]) <= latest
   );
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
@@ -247,10 +247,11 @@ export function HomeComp() {
                     <div
                       key={item.id}
                       className={`mx-1 ${
-                        Number(item.date[2]) === latest ? " border-red-700" : ""
+                        Number(item.date[2]) <= latest ? " border-red-700" : ""
                       } my-1 py-2 px-2 mobile:w-[300px]   grid w-[400px]  border-[1px] shadow-md rounded-lg border-gray-300 items-center justify-center content-center`}
                     >
                       <div>Zone:{item.zone}</div>
+
                       <p>Location:{item.location}</p>
                       <p>Description:{item.description}</p>
                       <p>Notice By:{item.addedBy}</p>
