@@ -20,7 +20,7 @@ export default function FacilitesComp() {
     location: string;
     description: string;
     date: string;
-isDone:boolean
+    isDone: boolean;
     addedBy: string;
   }
 
@@ -37,7 +37,7 @@ isDone:boolean
 
     fetchData();
   }, []);
-  const nav = useNavigate()
+  const nav = useNavigate();
   const [data, setData] = useState<DataItem[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 9;
@@ -52,14 +52,14 @@ isDone:boolean
     );
   };
 
-  const updateIsDone = async (documentId:string) => {
+  const updateIsDone = async (documentId: string) => {
     try {
       const facilityRef = doc(db, "facilities", documentId); // Get reference using document ID
-      setIsLoading(true)
+      setIsLoading(true);
 
       await updateDoc(facilityRef, {
         isDone: true, // Update only the isDone field
-      }).then(()=>{
+      }).then(() => {
         const fetchData = async () => {
           const querySnapshot = await getDocs(collection(db, "facilities"));
           const dataArray: DataItem[] = [];
@@ -67,16 +67,26 @@ isDone:boolean
             dataArray.push({ id: doc.id, ...doc.data() } as DataItem);
           });
           setData(dataArray);
-          setIsLoading(false)
-        }
-        fetchData()
-      })
+          setIsLoading(false);
+        };
+        fetchData();
+      });
 
       console.log("Document updated successfully!");
     } catch (error) {
       console.error("Error updating document:", error);
     }
   };
+
+  const timeElapsed = Date.now();
+  const today = new Date(timeElapsed);
+  const x = today.toLocaleDateString();
+
+  const latest = Number(x[2]) - 2;
+
+  const late: DataItem[] = data.filter(
+    (review) => Number(review.date[2]) <= latest
+  );
 
   const currentItems = data.slice(
     currentPage * itemsPerPage,
@@ -93,7 +103,7 @@ isDone:boolean
               {" "}
               <div className="flex justify-center items-center content-center  h-[400px]">
                 <div className="flex-row items-center justify-center content-center  text-center">
-                  <BsDatabaseFillX className="text-[200px]"/>
+                  <BsDatabaseFillX className="text-[200px]" />
 
                   <p className="text-xl front-bold  text-gray-400 ">
                     !No data Found
@@ -108,16 +118,26 @@ isDone:boolean
                   {currentItems.map((item: DataItem, i) => (
                     <div
                       key={item.id}
-                      className="mx-1  border-dashed  border-[#5ebba8] items-center justify-center content-center my-2 py-2 px-2 grid w-[400px] border-[1px] shadow-md rounded-lg "
+                      className={`mx-1  border-dashed ${ Number(item.date[2]) <= latest ? " border-red-700" : "border-[#5ebba8] "}  items-center justify-center content-center my-2 py-2 px-2 grid w-[400px] border-[1px] shadow-md rounded-lg `}
                     >
                       <p>Zone:{item.zone}</p>
                       <p>Location:{item.location}</p>
                       <p>Description:{item.description}</p>
                       <p>Notice By :{item.addedBy}</p>
                       <p>Date {item.date}</p>
-                      <button                         disabled={item.isDone}
-className={`border w-22 bg-teal-500 ${item.isDone ? 'rounded-full bg-teal-500 w-5 ' : 'rounded-lg  hover:bg-teal-700'}  text-white `} onClick={()=>{updateIsDone(item.id)}}>{item.isDone ? <MdDone />
-  : 'Done'}</button>
+                      <button
+                        disabled={item.isDone}
+                        className={`border w-22 bg-teal-500 ${
+                          item.isDone
+                            ? "rounded-full bg-teal-500 w-5 "
+                            : "rounded-lg  hover:bg-teal-700"
+                        }  text-white `}
+                        onClick={() => {
+                          updateIsDone(item.id);
+                        }}
+                      >
+                        {item.isDone ? <MdDone /> : "Done"}
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -150,10 +170,16 @@ className={`border w-22 bg-teal-500 ${item.isDone ? 'rounded-full bg-teal-500 w-
                   </div>
                 )}
 
-<FacilitesExportExcelSheet/>
+                <FacilitesExportExcelSheet />
                 {/* Export button */}
-                <button className="text-blue-500 mb-56" onClick={()=>{nav('/update-password')}}>Change Password</button>
-
+                <button
+                  className="text-blue-500 mb-56"
+                  onClick={() => {
+                    nav("/update-password");
+                  }}
+                >
+                  Change Password
+                </button>
               </div>
             </>
           )}
