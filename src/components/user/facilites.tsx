@@ -6,6 +6,8 @@ import { useState } from "react";
 import Loader from "src/pages/loading";
 import { IoMdArrowDropleft } from "react-icons/io";
 import { IoMdArrowDropright } from "react-icons/io";
+import { TbDeviceMobileOff } from "react-icons/tb";
+
 import { BsDatabaseFillX } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import FacilitesExportExcelSheet from "./facilites-excel-sheet";
@@ -102,7 +104,7 @@ export default function FacilitesComp() {
           {data.length === 0 ? (
             <>
               {" "}
-              <div className="flex justify-center items-center content-center  h-[400px]">
+              <div className="flex justify-center items-center content-center mobile:hidden  h-[400px]">
                 <div className="flex-row items-center justify-center content-center  text-center">
                   <BsDatabaseFillX className="text-[200px]" />
 
@@ -114,12 +116,12 @@ export default function FacilitesComp() {
             </>
           ) : (
             <>
-              <div className="flex justify-center ">
+              <div className="flex justify-center mobile:hidden ">
                
-                <div className="grid grid-cols-3 gap-4   ">
+                <div className="grid grid-cols-3 gap-4 mobile:hidden  ">
                   {currentItems.map((item: DataItem, i) => (
 
-<div className={`max-w-sm  border-4 border-dashed ${ Number(item.date[2]) <= latest ? " border-red-700" : "border-[#5ebba8] "}  rounded-lg shadow`}>
+<div className={`max-w-sm  mobile:hidden border-4 border-dashed ${ Number(item.date[2]) <= latest ? " border-red-700" : "border-[#5ebba8] "}  rounded-lg shadow`}>
     
         {item.imageUrl ? <img className="rounded-t-lg h-44 w-full" src={item.imageUrl} alt=" " />: <img className="rounded-t-lg h-44 w-full" src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoBAeYwmKevvqaidagwfKDT6UXrei3kiWYlw&s' alt=" " />}
   
@@ -149,12 +151,12 @@ export default function FacilitesComp() {
               {data.length <= 6 ? (
                   <></>
                 ) : (
-                  <div className="flex justify-center ">
+                  <div className="flex justify-center mobile:hidden">
                     {currentPage === 0 ? (
                       <></>
                     ) : (
                       <button
-                        className="px-2 py-1 text-2xl rounded-md bg-teal-500 hover:bg-teal-600 text-gray-700"
+                        className="px-2 py-1 mobile:hidden text-2xl rounded-md bg-teal-500 hover:bg-teal-600 text-gray-700"
                         onClick={handlePrev}
                       >
                         <IoMdArrowDropright />
@@ -165,7 +167,7 @@ export default function FacilitesComp() {
                       <></>
                     ) : (
                       <button
-                        className="px-2 py-1 text-2xl rounded-md ml-2 bg-teal-500 hover:bg-teal-600 text-gray-700"
+                        className="px-2 mobile:hidden py-1 text-2xl rounded-md ml-2 bg-teal-500 hover:bg-teal-600 text-gray-700"
                         onClick={handleNext}
                       >
                         <IoMdArrowDropleft />
@@ -173,13 +175,22 @@ export default function FacilitesComp() {
                     )}
                   </div>
                 )} 
-                 <div className="flex justify-center flex-col  items-center ">
+                 <div className="flex mobile:hidden justify-center flex-col  items-center ">
                  <button className="text-blue-500 pb-3 " onClick={()=>{nav('/update-password')}}>Change Password</button>
 
                  <FacilitesExportExcelSheet />
               
                  </div>
        
+       <div className=" largeDesktop:hidden laptop:hidden desktop:hidden largeLaptop:hidden w-full  tablet:hidden flex justify-center items-center  text-center content-center h-full  ">
+      <div className="flex-row">
+         <TbDeviceMobileOff className="text-gray-400 text-[200px] w-full" />
+       <h1 className="text-4xl font-bold  ">Sorry this website is not allowed for mobile </h1>
+      </div>
+      
+
+       </div>
+
             </>
           )}
         </>

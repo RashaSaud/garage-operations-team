@@ -233,9 +233,9 @@ export function HomeComp() {
             </>
           ) : (
             <>
-              <div className="flex justify-center flex-col content-center  items-center ">
+              <div className="flex justify-center flex-col content-center  items-center  ">
                 
-                <div className=" flex-col   shadow-md bg-white w-[900px] tablet:w-auto h-[100px] tablet:h-fit border-1  border-gray-200 rounded-lg mb-5  flex items-center justify-center text-center ">
+                <div className=" flex-col  mobile:w-fit mobile:h-fit shadow-md bg-white w-[900px] tablet:w-auto h-[100px] tablet:h-fit border-1  border-gray-200 rounded-lg mb-5  flex items-center justify-center text-center ">
                   <div className="  grid grid-cols-3 w-[300px]">
                     <h1>
                       In progress <hr />
@@ -254,7 +254,7 @@ export function HomeComp() {
                     <h1>{late.length}</h1>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 ">
+                <div className="grid grid-cols-3 mobile:hidden ">
                   {currentItems.map((item: DataItem, i) => (
                     // <div
                     //   key={item.id}
